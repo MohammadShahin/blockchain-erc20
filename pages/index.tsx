@@ -3,9 +3,9 @@ import React from 'react'
 import styles from '../styles/Home.module.css'
 import { useAccount, useConnect, useDisconnect, useContract, useSigner } from 'wagmi'
 // import { calculatorAbi } from '../src/abi'
-import { Contract, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { useToast, Button, Input, Text, Flex, Box, Heading, NumberInput, NumberInputField } from '@chakra-ui/react'
-import { min, toFloat } from '../src/utils'
+import { min } from '../src/utils'
 import { abi, tokenAddress } from '../src/constants'
 
 const maxChar = 50;
@@ -70,42 +70,8 @@ export default function Home() {
       }
     }
     updateTokenDetails()
-  }, [contract])
+  }, [contract, isConnected])
 
-  React.useEffect(() => {
-    if (contract && isConnected)
-      handleUpdateCurrentHolders()
-  }, [contract])
-
-  React.useEffect(() => {
-    disconnect()
-  }, [])
-
-  const func = async () => {
-    try {
-      if (!contract) throw new Error("Contract is not provided");
-
-      const tx = await contract.enter({ value: ethers.utils.parseEther("0.011") })
-      await tx.wait()
-      handleUpdateCurrentHolders()
-    }
-    catch (e) {
-      let _errorMessage = '';
-      if (typeof e === "string") {
-        _errorMessage = e.toUpperCase()
-      } else if (e instanceof Error) {
-        _errorMessage = e.message // works, `e` narrowed to Error
-      }
-
-      toast({
-        title: 'Entering lottery failed.',
-        description: `Failure message: ${_errorMessage.slice(0, min(maxChar, _errorMessage.length))}`,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
-    }
-  }
 
   const handleUpdateCurrentHolders = async () => {
     if (!contract) return
@@ -119,6 +85,15 @@ export default function Home() {
 
     setCurrentHolders(newCurrentHolders)
   }
+
+  React.useEffect(() => {
+    if (contract && isConnected)
+      handleUpdateCurrentHolders()
+  }, [contract])
+
+  React.useEffect(() => {
+    disconnect()
+  }, [])
 
   const handleTransfer = async () => {
     try {
@@ -138,7 +113,7 @@ export default function Home() {
       }
 
       toast({
-        title: 'Error in picking winner.',
+        title: 'Error.',
         description: `Failure message: ${_errorMessage.slice(0, min(maxChar, _errorMessage.length))}`,
         status: 'error',
         duration: 5000,
@@ -166,7 +141,7 @@ export default function Home() {
       }
 
       toast({
-        title: 'Error in picking winner.',
+        title: 'Error.',
         description: `Failure message: ${_errorMessage.slice(0, min(maxChar, _errorMessage.length))}`,
         status: 'error',
         duration: 5000,
@@ -193,7 +168,7 @@ export default function Home() {
       }
 
       toast({
-        title: 'Error in picking winner.',
+        title: 'Error.',
         description: `Failure message: ${_errorMessage.slice(0, min(maxChar, _errorMessage.length))}`,
         status: 'error',
         duration: 5000,
@@ -219,7 +194,7 @@ export default function Home() {
       }
 
       toast({
-        title: 'Error in picking winner.',
+        title: 'Error.',
         description: `Failure message: ${_errorMessage.slice(0, min(maxChar, _errorMessage.length))}`,
         status: 'error',
         duration: 5000,
@@ -244,7 +219,7 @@ export default function Home() {
       }
 
       toast({
-        title: 'Error in picking winner.',
+        title: 'Error.',
         description: `Failure message: ${_errorMessage.slice(0, min(maxChar, _errorMessage.length))}`,
         status: 'error',
         duration: 5000,
@@ -268,7 +243,7 @@ export default function Home() {
         {isConnected ?
           <React.Fragment>
             <Heading as='h1' fontSize={"4rem"} lineHeight="1.1">
-              Welcome to <span className={styles.blue}>Blockchain Lottery</span>
+              Welcome to <span className={styles.blue}>Blockchain ERC20 Token</span>
             </Heading>
 
             <Heading mt='10'>
@@ -340,7 +315,7 @@ export default function Home() {
                 </Flex>
                 {!!balanceOfValue &&
                   <Text>
-                    Last &quotbalance of&quot query result {' '} {balanceOfValue}
+                    Last &ldquo;balance of&ldquo; query result {' '} {balanceOfValue}
                   </Text>
                 }
 
@@ -361,7 +336,7 @@ export default function Home() {
           :
           <React.Fragment>
             <Heading fontSize={"4rem"} lineHeight="1.1">
-              Welcome to <span className={styles.blue}>Blockchain Lottery</span>
+              Welcome to <span className={styles.blue}>Blockchain ERC20 Token</span>
             </Heading>
             <Text >
               Please connect to metamask to continue.
